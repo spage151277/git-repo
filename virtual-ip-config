@@ -1,0 +1,32 @@
+// check for device which is configured using ifconfig
+ifconfig -a
+// your eth0 is the physical network interface and for larger system we may need to have multipek IpAddress configured on a single physical network.
+// to configure multiple ip-addresses ( you need to be root)
+
+sudo ifconfig eth0:1 inet 172.21.75.100 netmask 255.255.255.0
+
+// go to below path
+
+cd /etc/sysconfig/network-scripts/
+
+ls -lrt ifcfg*eth*
+
+sudo cp ifcfg-eth0\:0 ifcfg-eth0\:1
+
+sudo vi ifcfg-eth0\:1
+
+// what needs to be changed in it is MUST
+DEVICE="eth0:1"
+IPADDR=172.21.75.100
+// save the file and you will need to do network service restart like below
+
+sudo service network restart
+
+//once this is succcessfull you will be able to see virtual ip configured.
+
+ifconfig -a
+
+//to make up and down interface
+
+ifup eth0:1  - To Make Up
+ifdown eth0:1  - To make down
