@@ -1,0 +1,534 @@
+    /***** Date 9th June Goal Setting ***/
+    
+    1. Sybase Start Brushing Up. (start 9th June + End : 01 July 2013)
+    2. Learn C
+    3. Learn Python/Perl/Java
+    4. Oracle
+    
+    /************ Sybase Question *******/
+    
+    
+    An Ecstatic and Certified Sybase DBA is here <-'
+    It's my pleasure to say, I'm a certified Sybase DBA and Sybase is my passion...
+    
+    SATURDAY, 16 JULY 2011
+    100 Sybase Interview Questions and Answers...
+    
+    
+    Attending Sybase DBA interview is not an easy task. You have to use your expertise and experience to answer to the point based on your environment. But this post helps you in attending the interview to an extent.
+    
+    
+    1.             Tell me something about yourself?
+    a.             Explain your education, Family background and work experience.
+    
+    2.             What are the system roles and status by default?
+    a.             Sa_role, sso_role and oper_role are system roles. They are on by default.
+    
+    3.             What are the daily activities  as a Sybase DBA?
+    a.         check the status of the server (using ps –eaf |grep servername) or
+		with showserver at OS level  or
+		try to login
+	       
+    if it fails we should understand that server is not up …   then we have
+    to start the server after looking the errorlogs.
+    
+    check the size the file system (df –k).
+    check the status of the database (sp_helpdb)
+    check the schedule cron job
+    check whether any process is blocked (sp_who and sp_lock)
+    see if we have to take backups / load database
+    check the errorlog
+    
+    4.             What are the default databases in ASE-12_5?
+    a.         master, model, tempdb, sybsystemprocs, sysbstemdb
+		optional db’s pubs2,pubs3, sybsecurity, audit, dbccdb
+    
+    5.         Tell about your work environment?
+    a.         I worked on ASE 12.5.3 on Solaris 8 version. 
+    
+	      I.    Altogether we have 4 ASE servers on 4 different Solaris boxes
+	     II.    Out of them 2 or productions boxes ,1 is UAT and 1 is Dev servers
+	    III.    On production boxes we have 2 cpus on each box, on UAT we have 2 cpus and on Dev server 4 cpus.
+	   IV.    Total we have 180 databases, 60@ prod and 60 @ dev.
+	    V.    Biggest database size is 30GB
+	   VI.    No of users 5000 in production.
+	  VII.    We are handling the tickets received through emails (any production issues).
+    
+    6.         If production server went down what all the steps u will follow?
+    a.         First I will intimate to all the application mangers and they will send an alert message to all the users regarding the down time.
+		Then I will look into the errorlog and take relevant action based on the error message, If I couldn’t solve the issue, I will intimate to my DBA manager further log the case with Sybase as priority P1 (System down).
+    
+    7.         What will you do If you heard Server performance is down?
+    a.         First check the network transfer rate using ping -t network port, might be the network problem, will contact the network people, make sure that tempdb size is good enough to perform the user connections, mostly tempdb size should be 25% of  all the users database size.  Make sure that we run the update statistics and recompile the stored procedures sp_recompile on regular basis, also check the database fragment level, if necessary defrag exercise, run the sp_sysmon , sp_monitor and analyze from the output like cpu utilization etc.,
+    
+    8.         Query performance down?
+    a.         Based on the query first will run the set show plan on to see how the query is being executed, and analyze the output, based on the output will tune the query, if necessary we should create indexes on the used tables.  And also based on the output I will check whether the optimizer is picking the right plan or not, run the optdiag to check when the last we had run the update statistics as optimization of the query depends on the statistics, run the sp_recompile, so that the stored procedures will pick the new plan based on the current statistics.
+    
+    9.         What all the precautions you will take to avoid the same type of problem?
+    a.         We never had an issue, I will document the thing with steps taken to resolve the issue.
+    
+    10.        If the time comes such that you had to take Important decision, but your reporting manager is not there, so how you will decide?
+    a.         I will approach my project manager’s boss, will explain the situation and seek the permission from him, if he’s not available then I will take the call, and will keep all the application managers in the loop.
+    
+    11.        How do check the current running processes?
+    a.         ps –eaf
+    
+    12.        Can u create your own sps for system wise?
+    a.         Yes, we can, say for example we create the SPs to check the fragment level etc., etc.,
+    
+    13.        What u need to do is issue an ASE kill command on the connection then un-suspend the db?
+    a.         select lct_admin(“unsuspend”,db_id(“db_name”))
+    
+    14.        What command helps you to know the process running on this port, but only su can run this command?
+    a.         /var/tmp/lsof | grep 5300 (su)
+		netstat -anv | grep 5300 (anyone)
+    
+    15.        For synchronizing the logins from lower version to higher version, just take the 11.9.2 syslogins structure, go to 12.5 higher version server?
+    a.         create the table named as logins in the tempdb will this structure, run bcp in  into this login table, next use master to run the following commands, insert into syslogins select *,null,null from tempdb..logins
+    
+    16.        How to delete UNIX files which are more than 3 days old?
+    a.         You must be in the parent directory of snapshots and execute the below command
+    
+		find snapshots - type f -mtime  +3 –exec rm{}\;
+		find /backup/logs/ -name daily_backup* -mtime +21 -exec rm –f{}\;
+    
+    17.        How to find the time taken for rollback of the processed?
+    a.         kill 826 with statusonly
+    
+    18.        What is the difference between truncate_only & no_log?
+    a.         Truncate_only and no_log options are used to prune the transaction log without making the copy of it. 
+		i)          truncate_only:  It is used to truncate the log gracefully.  It checkpoints the database before the truncating the Database.  Truncate only – removes the inactive part of the log without making a backup copy.  Use on databases without log segments on a separate device from data segments.  Don’t specify a dump device or backup server name.  Use dump transaction with no_log as a last resort and use it only after  dump transaction truncate_only fails.
+    
+		ii)          no_log: Use no_log when your transaction log is completely full no_log doesn’t checkpoint the database before the dumping the log no_log  removes the inactive part of the log without making a backup copy, and without recording the procedure in the transaction log.  Use no_log only when you have totally run out of the log space and can’t run usual dump transaction command.  Use no_log as last resort and use it only after dump transaction with truncate_only fails.
+    
+		When  to use dump transaction that truncate_ only or with no_log
+    
+		When the log Is on the same segment as the data.  Dump transaction with truncate only  to truncate the log.
+    
+    You’re not concerned with the recovery of recent transactions ( for example, in an early development environment).  Dump transaction with truncate_only to truncate the log your usual method of dumping the transaction log (either the standard dump transaction command or dump transaction with truncate_only)  fails because of insufficient log space.  Dump transaction with no_log to truncate  the log without recording the event.
+    
+    Note: dump database immediately afterward to copy the entire database, including the log.
+    
+    
+    19.        Define Normalization?
+    a.         It is a process of designing database schema,  where in eliminating the redundancy of columns and inconsistency of database.
+    
+    20.        What are the types of normalization?
+    a.         First, normal form
+		The rules for First Normal Form are:
+    i)              Every column must be atomic.  It cannot be decomposed into two or more subcolumns.
+    ii)             You cannot have multivalued columns or repeating groups
+    iii)            Each row and column position can  have only one value.
+    
+    Second normal form
+    
+    For a table to be in second normal form, every non-key field must depend on the entire primary key,  not on part of a composite primary key.  If a database has only single-field primary keys, it is automatically in Second normal form.
+    
+    Third normal form
+    
+    For Table to be in Third normal form, a non-key field cannot depend on another non-key field.
+    
+    21.        What are the precautions taken to reduce the down time?
+    a.         disk mirroring or warm stand by.
+    
+    22.        What are the isolation levels?
+    a.         Specifies the kinds of actions that are not permitted while the current transactions execute.  The ANSI standard defines four levels of isolation for SQL transactions.  Level 0 prevents other transactions from changing.  The user controls the isolation level with the set option transaction level or with the at isolation clause of select or readtext.  Level 3 is equivalent to doing al queries with hold lock.  The default is level 1.  Also called “locking level”.
+    
+		Isolation level are of 4 types.  They are
+	       
+    1.             Level 0: allow dirty reads
+    2.             Level 1: prevents dirty reads
+    3.             Level 2: prevents dirty reads & non-repeatable reads
+    4.             Level 3: prevents phantom reads (dirty reads, non-repeatable reads, phantom reads)
+    
+    23.        What is optdiag?
+    a.         The optdiag utility displays statistics  from the systabstats and systatistics  tables.  optdiag can also be used to update systatistics  information.  Only a SA can run the optdiag  (A command line tool for reading, writing and simulating table, index, and column statistics).
+    
+    Advantages of optdiag
+    
+    optdiag can display statistics for all the tables in a database, or for a single table
+    optdiag  output contains addition information useful for understanding query costs, such as index height and the average row length.
+    optdiag  is frequently used for other tuning tasks, so you should have these reports on hand
+    
+    Disadvantages of optdiag
+    
+    It produces a lot of output, so if you need only a single piece of information, such as the number of pages in the table, other
+    methods are faster and have lower systems overhead.
+    
+    
+    24.        How frequently you defrag the database?
+    a.         When ever there are insertions, updations & deletions in a table we do defrag.
+    
+    25.        In 12.5 how to configure procedure cache?
+    a.         sp_cacheconfig
+    
+    26.        What are the default page sizes in ASE 12.5?
+    a.         Default page sizes are 2K,4K,8K,16K
+    
+    28.          How do you see the performance of the Sybase server?
+    a.         using sp_sysmon, sp_monitor, sp_who and sp_lock
+    
+    27.        What are the different types of shells?
+    a.         Bourne Shell, C-Shell, Korn-Shell
+    
+    29.          What is the difference between Bourne shell and K shell?
+    a.         Bourne shell is a basic shell which is bundled with all UNIX file systems.  Where as Korn shell is superset of Bourne shell.  It has got more added features like alias in the longest name and longest file name.  It has got history command which can display up to 200 commands.
+    
+    30.          How do you see the CPU utilization on UNIX?
+    a.         using sar & top
+    
+    
+    31.          How to mount a file system?
+    a.         with  mount <file name>
+    
+    32.          How do you get a port number?
+    a.             netstat –anv |grep 5000
+    /var/tmp/lsof |grep 5300
+    
+    33.          How do you check the long running transactions ?
+    a.         using syslogshold
+    
+    34.          What is an Index? What are the types of Indexes?
+    a.         Index is a separate storage segment created for the table.  There are two types of indexes they are clustered index and non-clustered index.
+    
+		Clustered Index. Vs Non-Clustered Indexes
+	       
+    Typically, a clustered index will be created on the primary key of a table, and non-clustered indexes are used where needed.
+    
+    Non-clustered indexes
+		Leaves are stored in b-tree
+		Lower overhead on inserts, vs. clustered
+		Best for single key queries
+		Last of page index can become a ‘hot spot’
+		249 non cluster indexes per table
+    
+    Clustered index
+		Records in table are sorted physically by key values
+		Only one clustered index per table
+		Higher overhead on inserts, if re-org on table is required
+		Best for queries requesting a range of records
+		Index must exist on same segment as table
+    
+    Note:  With a “lock datapages” or “lock datarows”  … clustered indexes are sorted physically only upon creation.  After that, the indexes behave like non-clustered index.
+    
+    35.          What is your challenging task?
+    a.         Master database recovery
+    
+    36.        What are the dbcc commands?
+    a.         the database consistency checker (dbcc) provides commands for checking the logical and physical consistency of a database.  Two major functions of dbcc are:
+	       
+    i)              Checking page linkage and data pointers at both page level and row level using checkstorage or checktable and checkdb.
+    
+    ii)             Checking page allocation using checkstorage, checkalloc, checkverify, tablealloc and indexalloc, dbcc checkstorage, dbcc checktable, dbcc checkalloc, dbcc indexalloc, dbcc checkdb.
+    
+    37.        How to find on Object Name from a Page Number?
+    a.         dbcc page(dbid,pageno)
+    
+    38.        What is table partitioning?
+    a.         Is splitting the large tables into smaller, with alter table (table name) partion#
+    39.        What is housekeeping task?
+    a.         When ASE is idle; it raises the checkpoint that automatically flushes the dirty reads from buffer to the disk.
+    
+    40.        What are the steps you take if your server process gets slow down?
+    a.         It is an open-ended answer, as far as I am concerned
+		i)          first I will check the network speed (ping -t)
+		ii)          then I see the errorlog
+		iii)         I check the indexes
+		iv)         I see the transaction log
+		v)         tempdb
+		vi)         check when it run last update statistics, if it is not I will update the statistics followed by sp_recompile.
+    
+    41.        How do you check the Sybase server running from UNIX box?
+    a.         ps –ef |grep “server name”  &   showserver
+    
+    42.        What are the db_options?
+    a.         trunk log on checkpoint, abort tran on log full, select into bulk copy / pll sort, single user, dbo use only, no recovery on checkpoint
+    
+    43.        How do you recover the master database?
+    a.         First I see that important system tables are taken dumps are clean.
+		like  sysdevices, sysdatabases, sysusages, sysalternates, syslogins, sysloginroles
+		Then, I will build the new master device using buildmaster
+		I will shutdown the server
+		Restart the server with usermode -m  in runserverfile
+		Load the dumps of 5 important systables
+		Check the system tables dumped
+		Restart in normal mode.
+    
+    44.        How do you know particular query is running?
+    a.         set show plan on
+    
+    45.        How do you put master database in single-user mode?
+    a.         using –m
+    
+    46.        How do you set the sa password?
+    a.         In runserver file –Psa
+    
+    47.        What is hotspot?
+    a.         Multiple transactions inserting in a single table
+    
+    48.        How do you check the current run level in UNIX?
+    a.         who –r
+    
+    49.        What is defncopy?
+    a.         It is a utility, used to copy the definitions of all objects of a database.  From a database to an operating system file or from an operating system file to database.  Invoke the defncopy program directly from the operating system. defncopy provides a non-interactive way of copying out definitions (create statements) for views, rules, defaults, triggers, or procedures from a database to an operating system file.
+    
+    50.        What is bcp?
+    a.         It is a utility to copy the data from a table to flat file and vice versa
+    
+    51.          What are the modes of bcp?
+    a.         Fast bcp &  Slow bcp are two modes.  bcp in works in one of two modes.
+    Slow bcp  - logs each row insert that it makes, used for tables that have one or more indexes or triggers.
+    Fast bcp – logs only page allocation, copying data into tables without indexes or triggers at fastest speed possible.
+		To determine the bcp mode that is best for your copying task, consider the
+    ·         Size of the table into which you are copying data
+    ·         Amount of data that you are copying in
+    ·         Number of indexes on the table
+    ·         Amount of spare database device space that you have for re-creating indexs
+    Fast bcp might enhance performance; however, slow bcp gives you greater data recoverability.
+    
+    52.          What  are the types in bcp?
+    a.         bcp in & bcp out
+    
+    53.          What is defrag?
+    a.         Defrag is deleting the indexes & recreating the indexes.  So that the gap space will be filled.
+    
+    54.          What is the prerequisite for bcp?
+    a.         We need to set select into bulk copy.
+    
+    55.          What is slow bcp?
+    a.         In this indexes will be on the table.
+    
+    56.          What is fast bcp?
+    a.         In this there won’t be any indexes on the table..
+    
+    57.          Will triggers fires during bcp?
+    a.         No, trigger won’t fire during bcp.
+    
+    58.          What is primary key, foreign key and unique key?
+    a.             Unique key:  It is a unique key which won’t allow null values in a table.  It is associated with clustered index.
+    Primary key:  The column or columns whose value uniquely identify a row in a table.  It is a which allows null values.  It is associated with non-clustered index.
+    Foreign Key:  A key column in a table that logically depends on a primary key column in another table.  Also, a column ( or combination of columns) whose values are required to match a primary key in some other table.
+    
+    59.          What is candidate key, alternate key & composite key?
+    a.         Candidate key: A primary key or unique constraint column.  A table can have multiple candidate keys.
+		Alternate key:  Alternate key is a key which is declared as a second key in composite key.
+		Composite key:  An index key that includes two or more columns; for example authors(au_lname,au_fname)
+    
+    60.          What’s the different between a primary key and unique key?
+    a.         Both primary key and unique enforce uniqueness of the column on which they are define.  But by default, primary key creates a clustered index on the column, where are unique creates a nonclustered index by default.  Another major difference  is that, primary key doesn’t allow NULLs, but unique key allows one NULL only.
+    
+    
+    61.          How do you trace H/W signals?
+    a.         with TRAP command.
+    
+    62.          What is a natural key?
+    a.         A natural key is a key for a given table that uniquely identifies the row.
+	       
+    63.          What are the salient features of 12.5?
+    a.         i)          different logical page sizes (2,4,8,16k)
+		ii)          data migration utility is there.
+    iii)            default database sybsystemdb is added.
+    iv)            Compressing the datafiles in a backup server.
+    v)             Wider columns
+    vi)            Large number of rows
+    vii)           In version 12 we have buildserver, here we have dataserver
+    
+    64.          What are different statistic commands  you use in UNIX?
+    a.         i/o stat, netstat, vmstat, mpstat, psrstat
+    
+    65.          What do you mean by query optimization?
+    a.         It is nothing but assigning indexes to a table, so that query optimizer will prepare a query plan for a table & update the values in a table.  With this performance increases.
+    
+    66.          What are locks?
+    a.         lock:  A concurrency control mechanism that protects the integrity of data and transaction results in a multi-user environment.  Adaptive Server applies page or table locks to prevent two users from attempting to change  the same data at the same time, and to prevent processes that are selecting data from reading data that is in the process of being changed.
+    
+    67.          What are levels of lock?
+    a.         page level, table level, row level,
+    
+    68.          What is deadlock ?
+    a.         A dead lock occurs when two or more user processes each have a lock on a separate page or table and each wants to acquire a lock on other process’s page or table.  The transaction with the least accumulated CPU time is killed and all of its work is rolled back.
+    
+    69.          What is housekeeper?
+    a.         The housekeeper is a task that becomes active when no other tasks are active.  It writes dirty pages to disk, reclaims lost space, flushes statistics to systabstats and checks license usage.
+    
+    70.          What are work tables?  What is the limit?
+    a.         work tables are created automatically in tempdb in Adaptive server merge joins, sorts and other internal processes.  There is a limit for work tables to 14.  System will create max of 14 work tables for a query.
+    
+    71.          What is update statistics?
+    a.         Updates information about distribution of key values in specified indexes or for specified columns, for all columns in an index or for all columns in a table.
+    
+		Usage: ASE keeps statistics about the distribution of the key values in each index, and uses these statistics in its decisions about which indexes to use in query processing.
+    
+		Syntax:  update statistics table_name [[index_name]| [(column_list)]]
+			    [ using step values]
+			    [ with consumers = consumers ]
+    
+			    update index statistics table_name [index_name]
+			    [ using step values]
+			    [ with consumers = consumers ]
+    
+    72.          What is sp_recompile?
+    a.         Causes each stored procedure and trigger that uses the named table to be recompiles the next time it runs.
+		Usage:  The queries used by stored procedure and triggers are optimized only once, when they are compiled.  As you add indexes or make other changes to your database that affect its statistics, your compiled stored procedures and triggers may lose efficiency.  By recompiling the stored procedures and triggers that act on a table, you can optimize the queries for maximum efficiency.
+    
+    73.          What is a difference between a segment and a device?
+    a.         A device is, well, a device: storage media that holds images of logical pages. A device will have a row in the sysdevices table.
+    
+    A fragment is a part of a device, indicating a range of virtual page  numbers that have been assigned to hold the images of a range of logical page numbers belonging to one particular database. A fragment is represented by a row  in sysusages.
+    
+    A segment is a label that can be attached to fragments. Objects can be associated with a particular segment (technically, each indid in sysindexes can be associated with a different segment). When future space is needed for the object, it will only be allocated from the free space on fragments that are labeled with that segment.
+    
+    There can be up to 32 segments in a database, and each fragment can be associated with any, all, or none of them (warnings are raised if there are no segments associated). Sysusages has a column called segmap which is a bitmapped index of which segments are associated, this maps to the syssegments table.
+    
+    74.          Do we have to create sp_thresholdaction procedure on every segment or every 
+    database or any other place!?
+    
+    a.         You don't *have* to create threshold action procedures for any segment, but you *can*  define thresholds on any segment. The log segment has a default "last  chance" threshold set up that will call a procedure called "sp_thresholdaction". It is a good idea to define sp_thresholdaction, but you don't have to - if you don't you will just get a "proc not found" error when the log fills up and will have to take care of it manually.
+    
+    Thresholds are created only on segments, not on devices or databases. You can create
+    them in sysprocedures with a name starting like "sp_" to have multiple databases share
+    the same procedure, but often each database has its own requirements so they are 
+    created locally instead.
+    
+    75.          When to run a reorg command?
+    
+    a.         reorg is useful when:
+    
+    • A large number of forwarded rows causes extra I/O during read operations.
+    
+    •Inserts and serializable reads are slow because they encounter pages with noncontiguous free space that needs to be reclaimed.
+    
+    • Large I/O operations are slow because of low cluster ratios for data and index pages.
+    
+    •sp_chgattribute was used to change a space management setting (reservepagegap, fillfactor, or exp_row_size) and the change is to be applied to all existing rows and pages in a table, not just to future updates.
+    
+    76.          What are the most important DBA tasks?
+    
+    a.         In my opinion, these are (in order of importance): (i) ensure a proper database / log dump schedule for all databases (including master); (ii) run dbcc checkstorage on all databases regularly (at lease weekly), and follow up any corruption problems found; (iii) run update [index] statistics at least weekly on all user tables; (iv) monitor the server errorlog for messages indicating problems (daily).  Of course, a DBA has many other things to do as well, such as supporting users & developers, monitor performance, etc.,
+    
+    77.          What is bit datatype and what’s the information that can be stored inside a bit column?
+    
+    a.         bit datatype is used to store Boolean information like 1 or 0 (true or false).  Until SQL Server 6.5 bit datatype could hold either a 1 or 0 and there was no support for NULL.  But from SQL Server 7.0 onwards, bit datatype can represent a third state, which is NULL.
+    
+    78.          What are different types of triggers?
+    
+    a.         Trigger is an event.  That gets fires when an event occurs, such as Insert, Delete, Update.  There are 3 types of triggers available with Sybase.
+    
+    79.          How many triggers will be fired if ore than one row is inserted?
+    
+    a.         The numbers of rows you are inserting into a table, that many number of times trigger gets fire.
+    
+    80.          What are advantage of using triggers?
+    
+    a.         To maintain the referential integrity.
+    
+    81.          How do you optimize a stored procedure?
+    
+    a.         By creating appropriate indexes on tables.  Writing a query based on the index and how to pick up the appropriate index.
+    
+    82.          How do you optimize a select statement?
+    
+    a.         Using the SARG’s in the where clause,  checking the query plan using the set show plan on.  If the query is not considering the proper index, then will have to force the correct index to run the query faster.
+    
+    83.          How do you force a transaction to fail?
+    
+    a.         By killing a process you can force a transaction to fail.
+    
+    
+    
+    84.          What are constraints?  Explain different types of constraints?
+    
+    a.         Constraints enable the RDBMS enforce the integrity of the database automatically,  without needing you to create triggers, rule or defaults.
+    
+    Types of constraints:  NOT NULL, CHECK, UNIQUE, PRIMARY KEY, FOREIGN KEY
+    
+    85.          What are the steps you will take to improve performance of a poor performing query?
+    
+    a.         This is very open ended question and there could be a lot of reasons behind the poor performance of a query.  But some general issues that you could talk about would be:  No indexes, table scans, missing or out of date statistics, blocking, excess recompilations of stored procedures, procedures and triggers without SET NOCOUNT ON, poorly written query with unnecessarily complicated joins,  too much normalization, excess usage of cursors and temporary tables.
+    
+		Some of tools /ways that help you trouble shooting performance problems are : SET SHOWPLAN ON
+    
+    86.          What would you do when the ASE server’s performance is bad?
+    
+    a.         “Bad performance” is not a very meaningful term, so you’ll need to get a more objective diagnosis first.  Find out (i) what such a complaint is based on (clearly increasing response time or just a “feeling” that it’s slower?).  (ii) for which applications / queries / users this seems to be happening, and (iii) whether it happens continuously or just incidentally.  Without identifying the specific, reproducible problem, any action is no better than speculation.
+    
+    87.          What you do when a segment gets full?
+    
+    a.         Wrong:  a segment can never get full (even though some error messages state something to that extent).  A segment is a “label” for one or more database device fragments; the fragments to which that label has been mapped can get full, but the segments themselves cannot. (Well, Ok, this is a bit of trick question… when those device fragments full up, you either add more space, or clean up old / redundant data.)
+    
+    88.          Is it a good idea to use data rows locking for all tables by default?
+    a.         Not by default, only if you’re having concurrency (locking) problems on a table, and you’re not locking many rows of a table in a single transaction, then you could consider datarows locking for that table.   In all other cases, use either data pages or all pages locking.
+    
+		(data pages locking as the default lock scheme for all tables because switching to datarows locking is fast and easy, whereas for all pages locking, the entire table has to be converted  which may take long for large tables.  Also, datapages locking has other advantages over all pages, such as not locking index pages, update statistics running at level 0, and the availability of the reorg command)
+    
+    89.          Is there any advantage in using 64-bit version of ASE instead of the 32-bit version?
+    a.         The only difference is that the 64-bit version of ASE can handle a larger data cache than the 32-bit version,  so you’d optimize on physical I/O.  Therefore, this may be an advantage if the amount of data cache is currently a bottleneck.  There’s no pint in using 64-bit ASE with the same amount of “total memory” as for the 32-bit version, because 64-bit ASE comes with an additional overhead in memory usage – so that net amount of data cache would actually be less for 64-bit than 32-bit in this case. 
+    90.          What is difference between managing permissions through users and groups or through user-defined roles?
+    
+    a.         The main difference is that user-defined roles (introduced in ASE 11.5) are server-wide and are grated to logins.  Users and groups (the classic method that has always been there since the first version of Sybase) are limited to a single database.  Permission can be grated / revoked to both user-defined roles and users / groups.  Whichever method you choose, don’t mix ‘m, as the precedence rules are complicated.
+    
+    91.          How do you BCP only a certain set of rows out of a large table?
+    
+    a.         If you’re in ASE 11.5 or later, create a view for those rows and BCP out from the view.  In earlier ASE versions, you’ll have to select those rows into a separate table first and BCP out from that table.  In both cases, the speed of copying the data depends on whether there is a suitable index for retrieving the rows.
+    
+    92.          What are the main advantages and disadvantages of using identity columns?
+    
+    a.         The main advantage of an identity column is that it can generate unique, sequential numbers very efficiently, requiring only a minimal amount of I/O.  The disadvantage is that the generated values themselves are not transactional, and that the identity values may jump enormously when the server is shutdown the rough way (resulting in “identity gaps”).  You should therefore only use identity columns in applications if you’ve addressed these issues (go here for more information about identity gaps).
+    
+    93.          Is there any disadvantage of splitting up your application data into a number of different databases?
+    
+    a.         When there are relations between tables / objects across the different databases, then there is a disadvantage indeed: if you would restore a dump of one of the databases, those relations may not be consistent anymore.  This means that you should always back up a consistent set of databases is the unit of backup / restore.  Therefore, when making this kind of design decision, backup/restore issues should be considered (and the DBA should be consulted).
+    
+    94.          How do u tell the data time of server started?
+    
+    a.         select “Server Start Time” = crdate from master..sydatabases where name = “tempdb”  or
+		select * from sysengines
+    
+    95.          How do your move tempdb off of the master device?
+    a.         This is Sybase TS method of removing most activity from the master device :
+		Alter tempdb on another device:
+	       
+    1>           alter database tempdb on  …
+    2>           go
+    drop the segments
+    3>           sp_dropsegment “default”, tempdb, master
+    4>           go
+    5>           sp_dropsegment “logsement”,tempdb,master
+    6>           go
+    7>           sp_dropsegment “system”, tempdb, master
+    8>           go
+    
+    
+    
+    96.          We have lost the sa password, what can we do?
+    
+    a.         Most people use the ‘sa’ account all of the time, which is fine if there is only ever one dba administering the sytem.  If you have more than one person accessing the server using the ‘sa’ account, consider using sa_role enabled accounts and disabling the ‘sa’ account.  Funnily enough, this is obviously what Sybase think because it is one of the questions in the certification exams.
+    
+		If you see that some is logged using the ‘sa’ account or is using an account with ‘sa_role’ enabled, then you can do the following:
+    
+		sp_configure “allow updates to system tables”,1
+    go
+    
+    update syslogins set password =null where name = ‘sa’
+    go
+    
+    sp_password null,newPassword
+    go
+    
+    97.          What are the 4 isolation levels, which was the default one?
+    ·         Level 0        -           read uncommitted/ dirty reads
+    ·         Level 1       -           read committed – default.
+    ·         Level 2        -           repeatable read
+    ·         Level 3        -           serializable
+    
+    
+    98.          Describe differences between chained mode and unchained mode?
+    ·         Chained mode is ANSI-89 complaint, where as unchained mode is not.
+    ·         In chained mode the server executes an implicit begin tran, where as in unchained mode an explicit begin tran is required.
+    
+    99.          dump transaction with standby_access is used to?
+    provide a transaction log dump with no active transactions
+    
+    100.        Which optimizer statistics are maintained dynamically?
+    Page counts and row counts.
+
