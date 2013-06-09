@@ -1,0 +1,29 @@
+Sybase DISK Mirroring:
+
+ASE : How to move a datafile using disk mirroring in Sybase12.5
+Example: move audit01 device from /dir1/datafile1 to /dir2/datafile2
+
+sp_configure ‘disable disk mirroring’, 0
+go
+shutdown with nowait
+go
+
+- restart dataserver
+
+disk mirror
+name = audit01,
+mirror = "/dir2/datafile2"
+go
+
+disk unmirror
+name = audit01,
+side = "primary",
+mode = remove
+go
+
+sp_helpdevice audit01
+go
+sp_configure 'disable disk mirroring", 1
+go
+
+- restart dataserver
