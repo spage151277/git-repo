@@ -702,7 +702,7 @@ Start Tuning....
 How to Start tuning: Server Level (Focus from Oracle Database)
 
 Whenever there is server level issue, The tuning starts from the server
-.. Just remember the phrase ÒThe person who has the problems has the symptoms for solutionsÓ So let us start the tuning from server..
+.. Just remember the phrase ï¿½The person who has the problems has the symptoms for solutionsï¿½ So let us start the tuning from server..
 
 1. First we need to find out what the server utilization is and who is utilizing the most.
 
@@ -716,21 +716,21 @@ Then you need to get the server process id (spid) from the os level of the speci
 Execute: ( I attached my queries ,, you can add the columns you need to add )
 
 Select module,action,machine,sql_address,sql_id,status from v$session vs
-Where paddr=(select addr from v$process where spid=Õ&spidÕ);
+Where paddr=(select addr from v$process where spid=ï¿½&spidï¿½);
 
 3. find out what the sql which is consuming resource.
 
-Select sql_text,sql_fulltext,optimizer_cost from v$sql where sql_id=Õ&sql_idÕ;
+Select sql_text,sql_fulltext,optimizer_cost from v$sql where sql_id=ï¿½&sql_idï¿½;
 
 4. Now you got the details of the sessions,, if you want to do kill the session .. go to your server console as the specific user and then kill the session
 
-How should I do: use ÔÕkill -9 Ó
+How should I do: use ï¿½ï¿½kill -9 ï¿½
 
-5. DonÕt stop here .. tune the query and take complete solution to the issue .
+5. Donï¿½t stop here .. tune the query and take complete solution to the issue .
 
 How to Start tuning: Session Level (focus from oracle Database)
 
-Refer to the postÉ How to Start tuning: Server Level (Focus from Oracle Database)
+Refer to the postï¿½ How to Start tuning: Server Level (Focus from Oracle Database)
 When we found that the specific session taking more bottleneck towards performance. Then The best step to be taken is the tracing the session (ie getting more details) before killing it.
 For Example FNDWFBG is taking more cpu usage.. what we need to take step is..
 1. As per the guidelines in the post.. first we need to take the Os process id.
@@ -762,11 +762,11 @@ The above tkprof options are very usefull.. it will give us the query details in
 
 How to start tuning: Code Level 
 
-Refer to the postÉ How to Start tuning: Session Level (focus from oracle Database)
+Refer to the postï¿½ How to Start tuning: Session Level (focus from oracle Database)
 Once we found the most expensive query, we need to tune the query and test it again..
 Always advisable to tune and test in your test instance.
 
-Follow the below steps to test and find out whether it is tuned or notÉ
+Follow the below steps to test and find out whether it is tuned or notï¿½
 
 1. Login to your Application user through which you can execute the statements
 
@@ -1074,7 +1074,7 @@ find . -size +100000000c -xdev -type f -exec ls -lh {} \;
 
 find /appl/oracle/admin/SID/udump -name "*.trc*" -mtime +90 -exec ls -ltrh {} \;
 
-find <path> -type f -print|xargs ls Ðl
+find <path> -type f -print|xargs ls ï¿½l
 
 Eg:
 
@@ -1082,9 +1082,9 @@ find /appl/formsA/oracle/product/dev6.0/reports60/server/cache -type f -print|xa
 
 find /data/a01/SID -name "*.arc" -mtime +5 -exec rm {} \;
 
-find . -mtime +730 -type f Ðprint  -exec tar -cvf /tempspace/repservr_cache_2years.tar . \;
+find . -mtime +730 -type f ï¿½print  -exec tar -cvf /tempspace/repservr_cache_2years.tar . \;
 
-find /tempspace -mtime +730 -type f Ðprint  -exec tar -cvf /tempspace/repservr_cache_2years.tar {} \;
+find /tempspace -mtime +730 -type f ï¿½print  -exec tar -cvf /tempspace/repservr_cache_2years.tar {} \;
 
 find /data/a01/SID -name "*.arc*" -mtime +5 -exec rm {} \;
 
@@ -1489,7 +1489,7 @@ Kernel Type: 64-bit
 
 prtconf
 
-/usr/bin/isainfo Ðkv
+/usr/bin/isainfo ï¿½kv
 
 getconf LONG_BIT 
 
@@ -1507,7 +1507,7 @@ To Check whether Sendmail is Enabled in a Unix Box
 
 lssrc -a |grep sendmail
 
-ps Ðef|grep sendmail
+ps ï¿½ef|grep sendmail
 
 
 Lists the no of processes grouped by individual user on a box
@@ -1522,7 +1522,12 @@ ps -ef|wc -l
 
 ps -ef|grep oracle|wc -l
 
-ps -x|wc Ðl
+ps -x|wc -l
 
 For files greater than 100mb
-find /home/oraapp Ðsize +100000c -ls
+find /home/oraapp  -size +100000c -ls
+
+
+Extract AWR Report :
+
+@$ORACLE_HOME/rdbms/admin/awrrpt.sql
