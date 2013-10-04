@@ -1531,3 +1531,29 @@ find /home/oraapp  -size +100000c -ls
 Extract AWR Report :
 
 @$ORACLE_HOME/rdbms/admin/awrrpt.sql
+
+----SOFAR-TOTALWORK
+
+SELECT sid,
+       TO_CHAR (start_time, 'hh24:mi:ss') stime,
+       MESSAGE,
+       (sofar / totalwork) * 100 percent
+  FROM v$session_longops
+ WHERE sofar / totalwork < 1
+/
+
+####################### Dump load activity################
+
+login with sysdba
+
+sqlplus / as sysdba
+
+grant create any directory to  SBI_PROD;
+
+CREATE DIRECTORY datadir1 AS  '/usr/oracle/app/product/11.2.0/dbhome_1/load_db';
+
+
+select directory_path from dba_directories; 
+
+
+
