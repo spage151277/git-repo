@@ -1570,5 +1570,27 @@ SELECT size_for_estimate, buffers_for_estimate, estd_physical_read_factor, estd_
      AND advice_status = 'ON';
      
      
+     
+     Example 14-1 Calculating the Buffer Cache Hit Ratio
 
+SELECT NAME, VALUE
+  FROM V$SYSSTAT
+WHERE NAME IN ('session logical reads','physical reads',
+               'physical reads direct','physical reads direct (lob)');
+
+The output of this query will look similar to the following:
+
+NAME                                                                  VALUE
+---------------------------------------------------------------- ----------
+session logical reads                                             464905358
+physical reads                                                     10380487
+physical reads direct                                                 86850
+physical reads direct (lob)                                               0
+
+Calculate the hit ratio for the buffer cache with the following formula:
+
+Hit Ratio = 1 - ((physical reads - physical reads direct - physical reads direct (lob)) / 
+(db block gets + consistent gets - physical reads direct - physical reads direct (lob)) 
+
+Based on the sample statistics in the example, the buffer cache hit ratio is equal to .978 or 97.8%.
 
