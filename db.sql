@@ -1594,3 +1594,16 @@ Hit Ratio = 1 - ((physical reads - physical reads direct - physical reads direct
 
 Based on the sample statistics in the example, the buffer cache hit ratio is equal to .978 or 97.8%.
 
+
+Useful queries to detect locks
+select * from v$lock where block > 0 ;
+select username, status, last_call_et/60, program, machine, sid, MODULE, sql_address, sql_hash_value from v$session where username is not null order by 3 desc ;
+select a.username, a.program, a.sid, b.event, b.wait_time, b.state from v$session a, v$session_wait b where a.sid=b.sid and a.status='ACTIVE' and a.username is not null ;
+select sql_text from v$sqltext where address=’<>’ and hash_value=’<>’ order by piece ;
+select SESSION_ID from v$locked_object l, dba_objects o where o.OBJECT_ID=l.OBJECT_ID and object_name='TRN_HDR_DBF' ;
+
+
+If a lock is blocking other sessions for a long time, identify and stop the blocking session
+
+select username,sid,serial# from v$session where sid=<blocking_session> ;
+alter system kill session ‘<sid>,<serial#>’ ;
